@@ -30,7 +30,7 @@
             ></i>
             <!-- 会话内容 -->
             <span>
-              <span v-html="message.content"></span>
+              <span v-html="renderMarkdown(message.content)"></span>
               <!-- loading -->
               <span
                 class="loading-dots"
@@ -58,11 +58,16 @@
 </template>
 
 <script setup>
+import { marked } from 'marked'
 import { onMounted, ref, watch } from 'vue'
 import axios from 'axios'
 import { v4 as uuidv4 } from 'uuid'
 
 const messaggListRef = ref()
+const renderMarkdown = (content) => {
+  if(!content) return ''
+  return marked.parse(content)
+}
 const isSending = ref(false)
 const uuid = ref()
 const inputMessage = ref('')
@@ -165,14 +170,14 @@ const uuidToNumber = (uuid) => {
 }
 
 // 转换特殊字符
-const convertStreamOutput = (output) => {
-  return output
-    .replace(/\n/g, '<br>')
-    .replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;')
-    .replace(/&/g, '&amp;') // 新增转义，避免 HTML 注入
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-}
+//const convertStreamOutput = (output) => {
+//  return output
+//    .replace(/\n/g, '<br>')
+//    .replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;')
+//    .replace(/&/g, '&amp;') // 新增转义，避免 HTML 注入
+//    .replace(/</g, '&lt;')
+//    .replace(/>/g, '&gt;')
+//}
 
 const newChat = () => {
   // 这里添加新会话的逻辑
